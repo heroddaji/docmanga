@@ -32,5 +32,5 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   
-  plugins: [new HtmlWebpackPlugin(), new webpack.NamedModulesPlugin()],
+  plugins: [new HtmlWebpackPlugin(), new webpack.NamedModulesPlugin(), new webpack.DllPlugin()],
 }
