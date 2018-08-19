@@ -59,6 +59,7 @@
     "popper.js": "^1.14.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-dropzone": "^5.0.1",
     "react-hot-loader": "^4.0.1",
     "reactstrap": "^6.4.0"
   }

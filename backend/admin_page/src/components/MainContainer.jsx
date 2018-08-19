@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as rebo from 'reactstrap'
 import {ImageBox} from './ImageBox'
+import {ImageEditor} from './ImageEditor'
 
 export class MainContainer extends React.Component {
         
@@ -10,11 +11,11 @@ export class MainContainer extends React.Component {
         return (
             <rebo.Container>
                 <rebo.Row>
-                    <rebo.Col sx={'3'}>
+                    <rebo.Col xs='3' sm='3' md='3' lg='3'>
                         <ImageBox store={this.props.store}/>
                     </rebo.Col>
-                    <rebo.Col sx={'auto'}>
-                        <rebo.Card>hehe</rebo.Card>
+                    <rebo.Col xs='auto' sm='auto' md='auto' lg='auto'>
+                        <ImageEditor store={this.props.store}/>    
                     </rebo.Col>
                 </rebo.Row>
             </rebo.Container>
