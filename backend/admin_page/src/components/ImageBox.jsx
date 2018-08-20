@@ -9,7 +9,11 @@ export class ImageBox extends React.Component {
         super();
         this.state = {
             files: []
-        }
+        }        
+    }
+
+    componentDidMount() {
+        this.reloadImageList();
     }
 
     reloadImageList = () => {
@@ -27,9 +31,12 @@ export class ImageBox extends React.Component {
 
     render() {
         const store = this.props.store;
+        
+        // not sure why onlick for image cannot use this.function, so must use this const function in this render function
         const imageClick = imageName => {
             store.openImageToEdit(imageName);
         } 
+        
         var imageList = store.images.map(function (image) {
                 return (
                     <img src={image}  class='img-thumbnail' width={100} height={100} 

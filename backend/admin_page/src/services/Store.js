@@ -24,7 +24,7 @@ export class Store {
     fetchImages = () => {
         this.ax.get('/images')
             .then((response) => {
-                console.log('fetchImages', response.data['images']);
+                // console.log('fetchImages', response.data['images']);
                 var _this=this;
                 this.images = response.data['images'].map((image) => {
                     return _this.baseUrl+'/upload_images/' + image;
