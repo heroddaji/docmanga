@@ -1,6 +1,6 @@
 import {observable, computed} from 'mobx';
 import * as axios from 'axios';
-
+import * as m from '../models/Model';
 
 export class Store {
     baseUrl = 'http://127.0.0.1:5000';

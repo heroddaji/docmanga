@@ -1,10 +1,9 @@
 import * as React from 'react';
+import * as rebo from 'reactstrap';
+import * as m from '../models/Model';
 import {observer} from 'mobx-react';
-
-import { Bar } from '@vx/shape';
-import {Drag} from '@vx/drag';
-import {localPoint} from '@vx/event';
-
+import * as p from 'react-paper-bindings';
+import '../css/ImageEditor.css';
 
 // Define the graph dimensions and margins
 const width = 800;
@@ -12,149 +11,120 @@ const height = 800;
 
 @observer
 export class ImageEditor extends React.Component {
-    
-    constructor() {
-        super(); 
+    segment = 0
+    path = 0
+    movePath=0
+    hitOptions = {
+        segments: true,
+        stroke: true,
+        fill: true,
+        tolerance: 20
+    };
+    constructor(props) {
+        super(props); 
         this.state = {
             doubleClickLoc:[],
             dragStartLoc:[],
             dragEndLoc:[],
+            shapes:[]
         }
+        this.paperView = React.createRef();
         
     }
     
     handleDoubleClick = (evt) => {
         console.log(evt);        
-        var e = evt.target;
-        var dim = e.getBoundingClientRect();
-        var x = evt.clientX - dim.left;
-        var y = evt.clientY - dim.top;
-        this.setState({doubleClickLoc:[x,y]})
+        let e = evt.target;
+        let dim = e.getBoundingClientRect();
+        let x = evt.clientX - dim.left;
+        let y = evt.clientY - dim.top;
+        this.setState({doubleClickLoc:[x,y]})        
+        let shape = new m.LayoutModel();
+        shape.x = x;
+        shape.y = y;
+        this.setState({
+            shapes:[...this.state.shapes, shape]
+        })
+    }
+
+    handleMouseDown = (event) => {
+        console.log('mouse down');
+        
+        const pa = this.paperView.current;
+        const project = pa.paper.project;        
+        this.segment = this.path = null;
+        var hitResult = project.hitTest(event.point, this.hitOptions);
+        if (!hitResult)
+            return;
+
+        if (hitResult) {
+            this.path = hitResult.item;
+            if (hitResult.type == 'segment') {
+                this.segment = hitResult.segment;
+                console.log('segment');
+                
+            } else if (hitResult.type == 'stroke') {
+                console.log('stroke');
+                var location = hitResult.location;
+                this.segment = this.path.insert(location.index + 1, event.point);
+                this.path.smooth();
+            }
+        }
+        this.movePath = hitResult.type == 'fill';
+        if (this.movePath) {
+            project.activeLayer.addChild(hitResult.item);
+        }
+    }
+
+    handleMouseDrag = (event) => {
+        let item = event.target;
+        if (this.segment) {
+            this.segment.position = event.point;
+            console.log('on segment', this.segment.position);
+            this.segment.point = event.point;
+        } else if (this.path) {
+            item.position = event.point;
+        }
+    }
+
+    handleMouseMove = (event) => {
+        const pa = this.paperView.current;
+        const project = pa.paper.project;        
+        project.activeLayer.selected = false;
+        if (event.target) {
+            event.target.selected = true;
+        }        
+    }
+
+    componentDidMount() {
+        const pa = this.paperView.current;
+        const paper = pa.paper;
+        paper.settings.handleSize = 12;
     }
     
     render() {
-        const store = this.props.store;                
-        console.log(this.state.dragStartLoc, this.state.dragEndLoc);
-        let startx = 0;
-        let starty = 0;
-        let endx = 0;
-        let endy = 0
-        // console.log(startx, starty, endx, endy);
-        
-        return (
-            <svg width={width} height={height}
-            onDoubleClick={this.handleDoubleClick}
-            >
-            <Drag width={width} height={height} resetOnStart={true}
-                onDragStart={({x, y}) =>  {
-                    console.log('drag start',x,y);
-                    
-                    this.setState((state,props) => {
-                        const dragStartLoc = [x,y];
-                        state.dragStartLoc = dragStartLoc                    
-                    });
-                }}
-
-                onDragMove={({ x, y, dx, dy }) => {                    
-                    this.setState((state, props) => {
-                        const dragEndLoc = [x + dx, y + dy];                        
-                        state.dragEndLoc = dragEndLoc;                        
-                        console.log('drag move',x+dx,y+dy);
-                        console.log('drag move state',state.dragEndLoc);
-
-                        startx = this.state.dragStartLoc[0] <= this.state.dragEndLoc[0] ? this.state.dragStartLoc[0] : this.state.dragEndLoc[0];
-                        starty = this.state.dragStartLoc[1] <= this.state.dragEndLoc[1] ? this.state.dragStartLoc[1] : this.state.dragEndLoc[1];
-                        endx = this.state.dragStartLoc[0] > this.state.dragEndLoc[0] ? this.state.dragStartLoc[0] : this.state.dragEndLoc[0];
-                        endy = this.state.dragStartLoc[1] > this.state.dragEndLoc[1] ? this.state.dragStartLoc[1] : this.state.dragEndLoc[1];        
-                    });
-                    
-                }} 
-
-                onDragEnd={({x, y}) =>  {
-                    console.log('drag end',this.state.dragEndLoc);
-                    
-                    // this.setState((state,props) => {
-                    //     const dragStartLoc = [x,y];
-                    //     state.dragStartLoc = dragStartLoc                    
-                    // });
-                }}
-            >
-
-                {({
-                x,
-                y,
-                dx,
-                dy,
-                isDragging,
-                dragStart,
-                dragEnd,
-                dragMove,
-                }) => {
-                    // console.log('is dragging', isDragging);
-                    
-                return (
-                    <g>
-                    {/* decorate the currently drawing line */}
-                    {isDragging && (
-                        <g>
-                        <rect
-                            fill="red"
-                            width={8}
-                            height={8}
-                            x={x + dx - 4}
-                            y={y + dy - 4}
-                            style={{ pointerEvents: 'none' }}
-                        />
-                        <circle
-                            cx={x}
-                            cy={y}
-                            r={4}
-                            fill="transparent"
-                            stroke="blue"
-                            style={{ pointerEvents: 'none' }}
-                        />
-
-                        
-                        <rect
-                            fill="transparent" 
-                            stroke="green"                           
-                            x={startx}
-                            y={starty}                            
-                            width={endx - startx}
-                            height={ endy - starty}
-                            style={{ pointerEvents: 'none' }}
-                        />
-                        </g>
-                    )}
-                    {/* create the drawing area */}
-                    <rect
-                        fill="transparent"
-                        stroke="black"
-                        width={width}
-                        height={height}
-                        onMouseDown={dragStart}
-                        onMouseUp={dragEnd}
-                        onMouseMove={dragMove}
-                        onTouchStart={dragStart}
-                        onTouchEnd={dragEnd}
-                        onTouchMove={dragMove}
-                    />
-                    </g>
-                );
-                }}
-
-            </Drag>
-            
-            <Bar
-            width={100}
-            height={50}
-            x={this.state.doubleClickLoc[0]}
-            y={this.state.doubleClickLoc[1]}
-            fill="steelblue"
-            stroke={'red'}
-            strokeWidth={3}
-            />
-            </svg>
+        const store = this.props.store;                                
+        return (     
+            <div id='canvasEditor'>                
+                <p.View ref={this.paperView} width={width} height={height}                 
+                onDoubleClick={this.handleDoubleClick}                    
+                >
+                    <p.Raster></p.Raster>
+                    { this.state.shapes.map(shape => {
+                        return (
+                            <p.Rectangle                
+                                onMouseDrag={this.handleMouseDrag}                
+                                onMouseMove={this.handleMouseMove}
+                                onMouseDown={this.handleMouseDown}
+                                point={[shape.x,shape.y]}
+                                fillColor={'#22222'}
+                                opacity={0.5}
+                                size={[shape.width, shape.height]}
+                                
+                            /> 
+                        )})}               
+                </p.View>
+            </div>       
         );
     }
 }
