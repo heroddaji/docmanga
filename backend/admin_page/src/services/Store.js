@@ -64,6 +64,6 @@ export class Store {
     }
 
     uploadImageLayoutData = (imageLayout) => {
-
+        
     }
 }
