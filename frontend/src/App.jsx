@@ -6,7 +6,7 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 const App = () => (
-  <MainContainer compiler="TypeScript" framework="React" />
+  <MainContainer />
 )
 
 export default hot(module)(App)

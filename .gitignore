@@ -1,3 +1,6 @@
+.scrapy/
+__pycache__/
+.idea/
 # OSX
 #
 .DS_Store

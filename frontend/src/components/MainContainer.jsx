@@ -2,11 +2,10 @@ import * as React from "react";
 import * as Ons from 'react-onsenui';
 import * as ons from 'onsenui';
 
-export interface MainContainerProps { compiler: string; framework: string; }
 
 // 'HelloProps' describes the shape of props.
 // State is never set so we use the '{}' type.
-export class MainContainer extends React.Component<MainContainerProps, {}> {
+export class MainContainer extends React.Component {
     handleClick = function() {
         ons.notification.alert('Hello dai du');
     };

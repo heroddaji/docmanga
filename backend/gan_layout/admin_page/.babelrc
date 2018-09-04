@@ -3,7 +3,6 @@
       "mobx",
       "env",
       "react",
-      "es2015",
       "stage-1",
       "stage-2"
     ],

@@ -11,21 +11,14 @@
   },
   "scripts": {
     "build": "webpack --mode=production",
-    "start": "webpack-dev-server --mode=development --hot",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "start": "webpack-dev-server --mode=development --hot"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^4.0.0-alpha.16",
-    "@storybook/addon-links": "^4.0.0-alpha.16",
-    "@storybook/addons": "^4.0.0-alpha.16",
-    "@storybook/react": "^4.0.0-alpha.16",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
     "babel-preset-mobx": "^1.0.3",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
@@ -43,19 +36,15 @@
     "style-loader": "^0.22.1",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack-dev-server": "^3.1.5",
+    "mobx-react-devtools": "^6.0.3"
   },
   "dependencies": {
-    "@types/bootstrap": "^4.1.2",
-    "@types/react": "^16.0.31",
-    "@types/react-dom": "^16.0.3",
-    "@types/reactstrap": "^6.0.2",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
     "jquery": "^3.3.1",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.5",
-    "mobx-react-devtools": "^6.0.3",
     "paper": "^0.11.5",
     "popper.js": "^1.14.4",
     "react": "^16.2.0",

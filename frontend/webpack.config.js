@@ -5,28 +5,22 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  mode:'development',
-  entry: ['./src/index.tsx'],
+  entry: ['./src/index.jsx'],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
   },
-  // devtool: "source-map",
-  devtool: "eval-source-map",
+  devtool: "inline-source-map",
   module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        include: path.resolve(__dirname, 'src'),
-        use: ['awesome-typescript-loader'],
+    rules: [{
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader']
       },
       {
-        // test: /\.css$/,
-        // use: ['style-loader', 'css-loader']
         test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader            
+        use: [{
+            loader: MiniCssExtractPlugin.loader
           },
           "css-loader"
         ]
@@ -35,14 +29,20 @@ module.exports = {
         test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
         use: ['file-loader']
       },
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
+      }
     ],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
-  
-  plugins: [new HtmlWebpackPlugin(), new webpack.NamedModulesPlugin(),
-    new MiniCssExtractPlugin()],
-  }
-  
+
+  plugins: [
+    new HtmlWebpackPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new MiniCssExtractPlugin()
+  ]
+}
